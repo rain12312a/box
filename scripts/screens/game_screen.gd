@@ -47,7 +47,10 @@ var _charges: Dictionary = {}
 var _armed := ""
 var _crane_from := Vector2i(-1, -1)
 var _ad_popup: AdPopup = null
-var _items_enabled := false
+## Workshop levels and editor playtests hand out items for free and never run out.
+var _items_free := false
+## Robot abilities stay a campaign system, exactly as the upgrade bay documents.
+var _abilities_enabled := false
 var _failed := false
 var hazards: LevelHazards = null
 
@@ -67,7 +70,9 @@ func _build() -> void:
 	state.restarted.connect(_on_state_restarted)
 	state.solved.connect(_on_state_solved)
 	state.tool_applied.connect(_on_tool_applied)
-	_items_enabled = level.builtin and Game.current_mode() == "campaign"
+	# Workshop levels (and their playtests) are a sandbox: items are free and unlimited.
+	_items_free = not (level.builtin and Game.current_mode() == "campaign")
+	_abilities_enabled = level.builtin and Game.current_mode() == "campaign"
 	_reset_charges()
 	hazards = LevelHazards.new()
 	hazards.changed.connect(_on_hazards_changed)
@@ -315,6 +320,8 @@ func _build_hazard_badge(host: Control) -> void:
 func _after_build() -> void:
 	await get_tree().process_frame
 	_fit_board()
+	if _items_free:
+		toast(t("sandbox_items_on"), 2.8)
 
 
 func _fit_board() -> void:
@@ -618,14 +625,19 @@ func _refresh_toolbar() -> void:
 		var owned := SaveManager.item_count(item_id)
 		var badge: Label = _item_badges.get(item_id)
 		if badge != null:
-			badge.text = str(owned) if owned > 0 else str(ItemCatalog.price(item_id))
-			badge.add_theme_color_override("font_color",
-					UIKit.COL_GOLD if owned > 0 else UIKit.COL_DIM)
+			if _items_free:
+				badge.text = "∞"
+				badge.add_theme_color_override("font_color", UIKit.COL_TEAL)
+			else:
+				badge.text = str(owned) if owned > 0 else str(ItemCatalog.price(item_id))
+				badge.add_theme_color_override("font_color",
+						UIKit.COL_GOLD if owned > 0 else UIKit.COL_DIM)
 		var armed := _armed == "item:" + str(item_id)
-		b.disabled = not _items_enabled
-		b.tooltip_text = "%s  ·  %s" % [ItemCatalog.display_name(item_id),
-				("%d" % owned) if owned > 0 else t("item_price", [ItemCatalog.price(item_id)])]
-		_style_tool_button(b, armed, UIKit.COL_GOLD, owned > 0)
+		b.disabled = false
+		var stock := t("item_unlimited") if _items_free else \
+				(("%d" % owned) if owned > 0 else t("item_price", [ItemCatalog.price(item_id)]))
+		b.tooltip_text = "%s  ·  %s" % [ItemCatalog.display_name(item_id), stock]
+		_style_tool_button(b, armed, UIKit.COL_GOLD, _items_free or owned > 0)
 	for part_id in _ability_buttons.keys():
 		var b: Button = _ability_buttons[part_id]
 		var level := SaveManager.upgrade_level(str(part_id))
@@ -633,7 +645,11 @@ func _refresh_toolbar() -> void:
 		var price := RobotUpgrades.extra_charge_price(str(part_id))
 		var badge: Label = _ability_badges.get(part_id)
 		if badge != null:
-			if level <= 0:
+			if not _abilities_enabled:
+				# abilities stay a campaign system, so say so instead of just refusing
+				badge.text = t("robot_gated_short")
+				badge.add_theme_color_override("font_color", UIKit.COL_DIM)
+			elif level <= 0:
 				badge.text = t("robot_locked_short")
 				badge.add_theme_color_override("font_color", UIKit.COL_DIM)
 			elif left < 0:
@@ -647,15 +663,17 @@ func _refresh_toolbar() -> void:
 				badge.text = "+%d" % price
 				badge.add_theme_color_override("font_color",
 						UIKit.COL_GOLD if SaveManager.wallet_coins() >= price else UIKit.COL_DIM)
-		var usable := level > 0 and (left != 0)
+		var usable := _abilities_enabled and level > 0 and (left != 0)
 		var armed := _armed == "ability:" + str(part_id)
-		b.disabled = level <= 0
+		b.disabled = not _abilities_enabled or level <= 0
 		var tip := "%s  ·  %s" % [RobotUpgrades.part_name(str(part_id)),
 				RobotUpgrades.effect_text(str(part_id), level)]
-		if left == 0 and level > 0:
+		if not _abilities_enabled:
+			tip = "%s  ·  %s" % [tip, t("ability_campaign_only")]
+		elif left == 0 and level > 0:
 			tip = "%s  ·  %s" % [tip, t("ability_charge_buy_tip", [price])]
 		b.tooltip_text = tip
-		_style_tool_button(b, armed, UIKit.COL_TEAL, usable or left == 0)
+		_style_tool_button(b, armed, UIKit.COL_TEAL, usable or (left == 0 and level > 0))
 
 
 func _style_tool_button(b: Button, armed: bool, accent: Color, usable: bool) -> void:
@@ -668,15 +686,12 @@ func _style_tool_button(b: Button, armed: bool, accent: Color, usable: bool) -> 
 func _on_item_pressed(item_id: String) -> void:
 	if _won or _failed or _overlay != null or _confirm_open:
 		return
-	if not _items_enabled:
-		toast(t("item_unavailable_here"), 2.2)
-		return
 	var key := "item:" + item_id
 	if _armed == key and item_id != "rewind" and item_id != "guide" \
 			and item_id != "contract":
 		_disarm()
 		return
-	if SaveManager.item_count(item_id) <= 0:
+	if not _items_free and SaveManager.item_count(item_id) <= 0:
 		if not SaveManager.buy_item(item_id):
 			Audio.play_sfx("error", -12.0)
 			toast(t("item_need_coins", [ItemCatalog.price(item_id)]), 2.2)
@@ -696,7 +711,7 @@ func _on_item_pressed(item_id: String) -> void:
 func _on_ability_pressed(part_id: String) -> void:
 	if _won or _failed or _overlay != null or _confirm_open:
 		return
-	if not _items_enabled:
+	if not _abilities_enabled:
 		toast(t("item_unavailable_here"), 2.2)
 		return
 	var level := SaveManager.upgrade_level(part_id)
@@ -738,7 +753,8 @@ func _disarm() -> void:
 
 
 func _consume_and_disarm(item_id: String) -> void:
-	SaveManager.consume_item(item_id)
+	if not _items_free:
+		SaveManager.consume_item(item_id)
 	_disarm()
 
 
@@ -752,7 +768,7 @@ func _finish_ability(part_id: String, message: String) -> void:
 
 
 func _use_c4(target: Vector2i) -> void:
-	if not SaveManager.consume_item("c4"):
+	if not _items_free and not SaveManager.consume_item("c4"):
 		_disarm()
 		return
 	state.break_wall(target)
@@ -798,7 +814,8 @@ func _on_board_click(cell: Vector2i) -> void:
 		Audio.play_sfx("error", -12.0)
 		toast(t("item_crane_blocked"), 2.0)
 		return
-	SaveManager.consume_item("crane")
+	if not _items_free:
+		SaveManager.consume_item("crane")
 	if board != null:
 		board.clear_highlight()
 		board.rebuild()
@@ -814,7 +831,8 @@ func _use_rewind() -> void:
 		Audio.play_sfx("error", -12.0)
 		toast(t("toast_undo_none"), 1.6)
 		return
-	SaveManager.consume_item("rewind")
+	if not _items_free:
+		SaveManager.consume_item("rewind")
 	state.undo()
 	Audio.play_sfx("undo", -6.0, 0.03)
 	_refresh_toolbar()
@@ -822,13 +840,14 @@ func _use_rewind() -> void:
 
 func _use_guide() -> void:
 	var shown: bool = await _show_hint()
-	if shown:
+	if shown and not _items_free:
 		SaveManager.consume_item("guide")
 	_refresh_toolbar()
 
 
 func _use_contract() -> void:
-	SaveManager.consume_item("contract")
+	if not _items_free:
+		SaveManager.consume_item("contract")
 	_refresh_toolbar()
 	if board != null:
 		board.clear_hint()

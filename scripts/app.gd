@@ -609,8 +609,11 @@ func _run_flow_test() -> void:
 		if (gs2.get("_item_buttons") as Dictionary).size() != ItemCatalog.ORDER.size():
 			print("FAIL item bar missing entries")
 			failures += 1
-		if not bool(gs2.get("_items_enabled")):
-			print("FAIL items disabled in campaign")
+		if bool(gs2.get("_items_free")):
+			print("FAIL campaign items should cost coins")
+			failures += 1
+		if not bool(gs2.get("_abilities_enabled")):
+			print("FAIL abilities disabled in campaign")
 			failures += 1
 		# rope: player (2,2), crate (3,2) -> step left drags it into (2,2)
 		gs2.call("_on_item_pressed", "rope")
@@ -1019,6 +1022,53 @@ func _run_flow_test() -> void:
 	else:
 		var board8: BoardView = gs8.get("board")
 		var st8: SokobanState = gs8.get("state")
+		# workshop levels are a sandbox: items are free, unlimited and never consumed
+		var coins8: int = SaveManager.wallet_coins()
+		var items8: int = SaveManager.total_items()
+		var badge8: Label = (gs8.get("_item_badges") as Dictionary).get("crane")
+		var crane_btn: Button = (gs8.get("_item_buttons") as Dictionary).get("crane")
+		print("flow: sandbox items free=", gs8.get("_items_free"), " badge='",
+				badge8.text if badge8 != null else "?", "' crane disabled=",
+				crane_btn.disabled if crane_btn != null else "?")
+		if not bool(gs8.get("_items_free")):
+			print("FAIL custom level items not free")
+			failures += 1
+		if bool(gs8.get("_abilities_enabled")):
+			print("FAIL abilities should stay campaign-only")
+			failures += 1
+		if badge8 == null or badge8.text != "∞" or crane_btn == null or crane_btn.disabled:
+			print("FAIL custom level item badge/button")
+			failures += 1
+		_click_at(crane_btn.get_global_rect().get_center())
+		await get_tree().process_frame
+		if str(gs8.get("_armed")) != "item:crane":
+			print("FAIL sandbox crane did not arm")
+			failures += 1
+		_click_at(crane_btn.get_global_rect().get_center())
+		await get_tree().process_frame
+		if SaveManager.wallet_coins() != coins8:
+			print("FAIL sandbox item charged coins")
+			failures += 1
+		if SaveManager.total_items() != items8:
+			print("FAIL sandbox item changed the inventory")
+			failures += 1
+		# rewind is free here: no stock needed, nothing is consumed by the undo
+		_press_key(KEY_D)
+		await get_tree().process_frame
+		var crates_after_push: Array = st8.boxes.keys()
+		gs8.call("_on_item_pressed", "rewind")
+		await get_tree().process_frame
+		print("flow: sandbox rewind moves=", st8.moves, " rewind stock=",
+				SaveManager.item_count("rewind"), " boxes=", st8.boxes.keys())
+		if int(st8.moves) != 0 or SaveManager.item_count("rewind") != 0:
+			print("FAIL sandbox rewind")
+			failures += 1
+		if st8.boxes.has(Vector2i(4, 2)) or not st8.boxes.has(Vector2i(2, 2)):
+			print("FAIL sandbox rewind did not undo the push")
+			failures += 1
+		if SaveManager.wallet_coins() != coins8 or SaveManager.total_items() != items8:
+			print("FAIL sandbox rewind charged the player")
+			failures += 1
 		_press_key(KEY_D)
 		await get_tree().process_frame
 		_press_key(KEY_D)
