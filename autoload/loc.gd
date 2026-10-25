@@ -1,0 +1,520 @@
+extends Node
+## Tiny two-language localization layer. Chinese is the primary language and
+## English is provided as a complete fallback so the project ships bilingual.
+
+signal language_changed
+
+const LANGS := ["zh", "en"]
+
+const STRINGS := {
+	"app_title": {"zh": "推箱子", "en": "SOKOBAN"},
+	"app_subtitle": {"zh": "货运仓库", "en": "Freight Depot"},
+	"app_tagline": {"zh": "推动 · 规划 · 完成", "en": "PUSH · PLAN · PREVAIL"},
+
+	# ---------------------------------------------------------------- common
+	"common_back": {"zh": "返回", "en": "Back"},
+	"common_close": {"zh": "关闭", "en": "Close"},
+	"common_cancel": {"zh": "取消", "en": "Cancel"},
+	"common_confirm": {"zh": "确认", "en": "Confirm"},
+	"common_yes": {"zh": "是", "en": "Yes"},
+	"common_no": {"zh": "否", "en": "No"},
+	"common_save": {"zh": "保存", "en": "Save"},
+	"common_delete": {"zh": "删除", "en": "Delete"},
+	"common_duplicate": {"zh": "复制", "en": "Duplicate"},
+	"common_edit": {"zh": "编辑", "en": "Edit"},
+	"common_play": {"zh": "开始", "en": "Play"},
+	"common_new": {"zh": "新建", "en": "New"},
+	"common_ok": {"zh": "好的", "en": "OK"},
+	"common_undo": {"zh": "撤销", "en": "Undo"},
+	"common_redo": {"zh": "重做", "en": "Redo"},
+	"common_restart": {"zh": "重新开始", "en": "Restart"},
+	"common_hint": {"zh": "提示", "en": "Hint"},
+	"common_pause": {"zh": "暂停", "en": "Pause"},
+	"common_resume": {"zh": "继续", "en": "Resume"},
+	"common_next": {"zh": "下一关", "en": "Next level"},
+	"common_retry": {"zh": "再试一次", "en": "Try again"},
+	"common_menu": {"zh": "主菜单", "en": "Main menu"},
+	"common_level_select": {"zh": "选择关卡", "en": "Level select"},
+	"common_settings": {"zh": "设置", "en": "Settings"},
+	"common_defaults": {"zh": "恢复默认", "en": "Defaults"},
+	"common_on": {"zh": "开", "en": "On"},
+	"common_off": {"zh": "关", "en": "Off"},
+	"common_locked": {"zh": "未解锁", "en": "Locked"},
+	"common_stars": {"zh": "星", "en": "stars"},
+	"common_moves": {"zh": "步", "en": "moves"},
+	"common_pushes": {"zh": "推动", "en": "pushes"},
+	"common_level": {"zh": "关卡", "en": "Level"},
+	"common_chapter": {"zh": "章", "en": "Chapter"},
+	"common_second": {"zh": "秒", "en": "s"},
+	"common_tip": {"zh": "小贴士", "en": "TIP"},
+	"common_loading": {"zh": "加载中…", "en": "Loading…"},
+	"common_unsaved": {"zh": "未保存", "en": "Unsaved"},
+	"common_apply": {"zh": "应用", "en": "Apply"},
+	"common_reset": {"zh": "重置", "en": "Reset"},
+	"common_select": {"zh": "选择", "en": "Select"},
+	"common_export": {"zh": "导出", "en": "Export"},
+	"common_import": {"zh": "导入", "en": "Import"},
+
+	# ---------------------------------------------------------------- menu
+	"menu_continue": {"zh": "继续游戏", "en": "Continue"},
+	"menu_continue_fresh": {"zh": "从第一关开始", "en": "Start from the first level"},
+	"menu_levels": {"zh": "选择关卡", "en": "Level select"},
+	"menu_editor": {"zh": "关卡编辑器", "en": "Level editor"},
+	"menu_settings": {"zh": "设置", "en": "Settings"},
+	"menu_quit": {"zh": "退出游戏", "en": "Quit"},
+	"menu_stats_title": {"zh": "仓库档案", "en": "Depot record"},
+	"menu_stats_levels": {"zh": "已通关", "en": "Cleared"},
+	"menu_stats_stars": {"zh": "星星", "en": "Stars"},
+	"menu_stats_pushes": {"zh": "累计推动", "en": "Pushes"},
+	"menu_stats_time": {"zh": "游戏时间", "en": "Play time"},
+	"menu_version": {"zh": "版本 %s", "en": "Version %s"},
+	"menu_credit": {"zh": "由 Copilot SDK 生成 · 美术与音乐为程序化临时素材",
+			"en": "Built with Copilot SDK · placeholder art & music generated procedurally"},
+
+	# ---------------------------------------------------------------- levels
+	"levels_title": {"zh": "选择关卡", "en": "Level Select"},
+	"levels_chapter_progress": {"zh": "%d / %d 已通关", "en": "%d / %d cleared"},
+	"levels_locked_chapter": {"zh": "通关上一章 75% 后解锁", "en": "Clear 75% of the previous chapter to unlock"},
+	"levels_custom": {"zh": "工坊", "en": "Workshop"},
+	"levels_custom_empty": {"zh": "还没有自定义关卡。去编辑器创造一关吧！",
+			"en": "No custom levels yet. Build one in the editor!"},
+	"levels_new_level": {"zh": "新建关卡", "en": "New level"},
+	"levels_total_stars": {"zh": "%d / %d 星", "en": "%d / %d stars"},
+	"levels_resume": {"zh": "继续", "en": "Continue"},
+	"levels_best": {"zh": "最佳 %d 推", "en": "Best %d pushes"},
+	"levels_not_played": {"zh": "尚未挑战", "en": "Not played"},
+	"levels_edit_hint": {"zh": "右键编辑", "en": "Right-click to edit"},
+	"levels_locked_prev": {"zh": "先完成上一关", "en": "Finish the previous level first"},
+	"levels_custom_hint": {"zh": "点击开始 · 右键编辑", "en": "Click to play · right-click to edit"},
+	"levels_custom_hazard_hint": {"zh": "点击开始 · 右键编辑 · 危险机制：%s",
+			"en": "Click to play · right-click to edit · hazards: %s"},
+
+	# ---------------------------------------------------------------- game
+	"game_chapter_format": {"zh": "第 %d 章 · %s", "en": "Chapter %d · %s"},
+	"game_level_format": {"zh": "第 %02d 关 · %s", "en": "Level %02d · %s"},
+	"game_moves": {"zh": "步数", "en": "Moves"},
+	"game_pushes": {"zh": "推动", "en": "Pushes"},
+	"game_time": {"zh": "用时", "en": "Time"},
+	"game_best": {"zh": "最佳", "en": "Best"},
+	"game_goals_left": {"zh": "剩余 %d 个目标点", "en": "%d goals remaining"},
+	"game_goals_done": {"zh": "全部就位", "en": "All crates placed"},
+	"game_par": {"zh": "参考推动 %d", "en": "Par %d pushes"},
+	"game_undo_empty": {"zh": "没有可以撤销的步骤", "en": "Nothing to undo"},
+	"game_redo_empty": {"zh": "没有可以重做的步骤", "en": "Nothing to redo"},
+	"game_hint_title": {"zh": "提示", "en": "Hint"},
+	"game_hint_ready": {"zh": "试着把高亮的木箱向这个方向推动。", "en": "Push the highlighted crate in this direction."},
+	"game_hint_fail": {"zh": "这一关太复杂了，暂时找不到提示。", "en": "This one is too complex for a hint right now."},
+	"game_hint_loading": {"zh": "正在计算…", "en": "Thinking…"},
+	"game_tip_show": {"zh": "知道了", "en": "Got it"},
+	"game_pause_title": {"zh": "暂停", "en": "Paused"},
+	"game_restart_confirm_title": {"zh": "重新开始？", "en": "Restart level?"},
+	"game_restart_confirm_body": {"zh": "当前进度将会丢失，确定要重新开始吗？",
+			"en": "Your current progress will be lost. Restart anyway?"},
+	"game_quit_confirm_title": {"zh": "返回主菜单？", "en": "Leave to main menu?"},
+	"game_quit_confirm_body": {"zh": "本关尚未完成，进度不会保存。",
+			"en": "This level is not finished; progress will not be saved."},
+	"game_solved": {"zh": "全部木箱已就位！", "en": "Every crate is in place!"},
+	"game_custom_banner": {"zh": "自定义关卡", "en": "Custom level"},
+	"game_playtest_banner": {"zh": "试玩模式 · ESC 返回编辑器", "en": "Playtest · ESC to return to editor"},
+	"game_blocked": {"zh": "推不动", "en": "Blocked"},
+	"game_wrong": {"zh": "木箱卡住了，按撤销或重来", "en": "That crate is stuck. Undo or restart."},
+	"game_autosave": {"zh": "进度已自动保存", "en": "Progress saved"},
+	"game_time_format": {"zh": "%02d:%02d", "en": "%02d:%02d"},
+	"game_level_banner": {"zh": "第 %d 章 · %s", "en": "Chapter %d · %s"},
+	"game_learn_tip": {"zh": "小贴士", "en": "Tip"},
+
+	# ---------------------------------------------------------------- result
+	"result_title": {"zh": "关卡完成", "en": "Level Clear"},
+	"result_new_record": {"zh": "新纪录！", "en": "New record!"},
+	"result_first_clear": {"zh": "首次通关", "en": "First clear"},
+	"result_stars": {"zh": "评价", "en": "Rating"},
+	"result_moves": {"zh": "总步数", "en": "Moves"},
+	"result_pushes": {"zh": "推动次数", "en": "Pushes"},
+	"result_time": {"zh": "用时", "en": "Time"},
+	"result_best": {"zh": "历史最佳 %d 步", "en": "Best: %d moves"},
+	"result_par": {"zh": "参考推动 %d 次", "en": "Par: %d pushes"},
+	"result_next": {"zh": "下一关", "en": "Next level"},
+	"result_replay": {"zh": "再玩一次", "en": "Replay"},
+	"result_levels": {"zh": "关卡选择", "en": "Level select"},
+	"result_back_editor": {"zh": "返回编辑器", "en": "Back to editor"},
+	"result_campaign_done": {"zh": "章节完成！", "en": "Chapter complete!"},
+	"result_all_done": {"zh": "全部关卡完成，你是仓库大师！", "en": "All levels cleared. You are a depot master!"},
+	"result_star_hint_3": {"zh": "推动次数达到参考值", "en": "Hit the push par"},
+	"result_star_hint_2": {"zh": "再少推几次就能拿三星", "en": "A few fewer pushes for three stars"},
+
+	# ---------------------------------------------------------------- settings
+	"settings_title": {"zh": "设置", "en": "Settings"},
+	"settings_audio": {"zh": "声音", "en": "Audio"},
+	"settings_master": {"zh": "总音量", "en": "Master volume"},
+	"settings_music": {"zh": "音乐", "en": "Music"},
+	"settings_sfx": {"zh": "音效", "en": "Sound effects"},
+	"settings_display": {"zh": "显示", "en": "Display"},
+	"settings_fullscreen": {"zh": "全屏", "en": "Fullscreen"},
+	"settings_language": {"zh": "语言", "en": "Language"},
+	"settings_language_zh": {"zh": "中文", "en": "中文"},
+	"settings_language_en": {"zh": "English", "en": "English"},
+	"settings_gameplay": {"zh": "游戏", "en": "Gameplay"},
+	"settings_shake": {"zh": "屏幕震动", "en": "Screen shake"},
+	"settings_confirm_restart": {"zh": "重新开始前确认", "en": "Confirm before restart"},
+	"settings_tips": {"zh": "显示关卡提示", "en": "Show level tips"},
+	"settings_data": {"zh": "存档", "en": "Save data"},
+	"settings_reset_progress": {"zh": "清除闯关进度…", "en": "Reset campaign progress…"},
+	"settings_reset_title": {"zh": "清除闯关进度？", "en": "Reset campaign progress?"},
+	"settings_reset_body": {"zh": "所有关卡记录、星星和统计数据会被删除，自定义关卡与设置会保留。此操作不可撤销。",
+			"en": "All level records, stars and stats will be deleted. Custom levels and settings are kept. This cannot be undone."},
+	"settings_reset_done": {"zh": "闯关进度已清除", "en": "Campaign progress cleared"},
+	"settings_about": {"zh": "关于", "en": "About"},
+	"settings_about_text": {"zh": "《推箱子：货运仓库》是一个完整的推箱子游戏示例：44 个经过求解器验证的关卡、撤销/重做、提示、星级评价、双语言，以及内置关卡编辑器。\n\n所有美术与音乐均为程序化生成的临时素材，可自由替换。",
+			"en": "Sokoban: Freight Depot is a complete Sokoban game: a 44-level campaign verified by a solver, undo/redo, hints, star ratings, two languages and a built-in level editor.\n\nAll art and music are procedurally generated placeholders and can be replaced freely."},
+	"settings_controls": {"zh": "操作", "en": "Controls"},
+	"settings_controls_text": {"zh": "移动：WASD / 方向键 / 手柄十字键\n撤销：Ctrl+Z   重做：Ctrl+Y\n重来：R   提示：H   暂停：Esc",
+			"en": "Move: WASD / arrows / D-pad\nUndo: Ctrl+Z   Redo: Ctrl+Y\nRestart: R   Hint: H   Pause: Esc"},
+	"settings_version_line": {"zh": "版本 %s · Godot 4.6", "en": "Version %s · Godot 4.6"},
+	"settings_autosave": {"zh": "设置会自动保存", "en": "Settings are saved automatically"},
+
+	# ---------------------------------------------------------------- editor
+	"editor_title": {"zh": "关卡编辑器", "en": "Level Editor"},
+	"editor_new": {"zh": "新建", "en": "New"},
+	"editor_open": {"zh": "打开", "en": "Open"},
+	"editor_save": {"zh": "保存", "en": "Save"},
+	"editor_playtest": {"zh": "试玩", "en": "Test"},
+	"editor_validate": {"zh": "检查", "en": "Check"},
+	"editor_tools": {"zh": "画笔", "en": "Brush"},
+	"editor_tool_floor": {"zh": "地板", "en": "Floor"},
+	"editor_tool_wall": {"zh": "墙壁", "en": "Wall"},
+	"editor_tool_goal": {"zh": "目标点", "en": "Goal"},
+	"editor_tool_box": {"zh": "木箱", "en": "Crate"},
+	"editor_tool_player": {"zh": "工人", "en": "Worker"},
+	"editor_tool_erase": {"zh": "橡皮", "en": "Eraser"},
+	"editor_mode": {"zh": "模式", "en": "Mode"},
+	"editor_mode_single": {"zh": "单格", "en": "Single"},
+	"editor_mode_rect": {"zh": "矩形", "en": "Rectangle"},
+	"editor_mode_fill": {"zh": "填充", "en": "Fill"},
+	"editor_metadata": {"zh": "关卡信息", "en": "Level info"},
+	"editor_name": {"zh": "关卡名称", "en": "Level name"},
+	"editor_author": {"zh": "作者", "en": "Author"},
+	"editor_size": {"zh": "尺寸", "en": "Size"},
+	"editor_width": {"zh": "宽", "en": "Width"},
+	"editor_height": {"zh": "高", "en": "Height"},
+	"editor_resize": {"zh": "调整尺寸", "en": "Resize"},
+	"editor_par": {"zh": "参考步数", "en": "Par"},
+	"editor_par_unknown": {"zh": "未计算", "en": "Not computed"},
+	"editor_par_value": {"zh": "%d 推 / %d 步", "en": "%d pushes / %d moves"},
+	"editor_calc_par": {"zh": "求解器计算", "en": "Solve & rate"},
+	"editor_calc_running": {"zh": "求解中…", "en": "Solving…"},
+	"editor_calc_done": {"zh": "可解！最优 %d 次推动、%d 步。", "en": "Solvable! Optimal: %d pushes, %d moves."},
+	"editor_calc_failed": {"zh": "在时间限制内未找到解法。请检查关卡。",
+			"en": "No solution found in time. Please check the level."},
+	"editor_calc_unsolvable": {"zh": "这一关无解。", "en": "This level cannot be solved."},
+	"editor_validation": {"zh": "检查结果", "en": "Validation"},
+	"editor_hazards": {"zh": "危险机制", "en": "Hazards"},
+	"editor_hazards_hint": {"zh": "勾选后仅在本关生效，试玩与正式游玩都会触发；不勾选则是一关纯推箱子。",
+			"en": "Tick to enable for this level only. Runs in playtest and in play."},
+	"editor_hazards_none": {"zh": "未开启任何危险机制。",
+			"en": "No hazards enabled."},
+	"editor_hazards_active": {"zh": "已开启：%s（试玩即可验证）",
+			"en": "Enabled: %s"},
+	"hazard_name_collapse": {"zh": "塌陷", "en": "Collapse"},
+	"hazard_name_thug": {"zh": "暴徒", "en": "Thug"},
+	"hazard_name_thief": {"zh": "小偷", "en": "Thief"},
+	"hazard_desc_collapse": {"zh": "每 15 秒落下 1~2 格碎石，10 秒后消失，碎石会挡住人和木箱。",
+			"en": "Rubble falls every 15 s (1-2 cells), blocks worker and crates, gone after 10 s."},
+	"hazard_desc_thug": {"zh": "玩家每走 2 步追 1 步，绕开木箱，碰到即失败；用木箱压它可消灭。",
+			"en": "Steps every 2 player actions, avoids crates, contact fails; crush it with a crate."},
+	"hazard_desc_thief": {"zh": "追最近的木箱，撬 2 回合即偷走；被机器人碰到就死，20 秒后重生。",
+			"en": "Chases the nearest crate and steals it after 2 turns; dies on contact, back in 20 s."},
+	"editor_valid": {"zh": "关卡有效，可以试玩和保存。", "en": "Level is valid and ready to play."},
+	"editor_errors": {"zh": "错误", "en": "Errors"},
+	"editor_warnings": {"zh": "提醒", "en": "Warnings"},
+	"editor_grid": {"zh": "网格", "en": "Grid"},
+	"editor_clear": {"zh": "清空", "en": "Clear"},
+	"editor_clear_title": {"zh": "清空画布？", "en": "Clear the canvas?"},
+	"editor_clear_body": {"zh": "所有绘制内容会被移除，只保留边界墙。",
+			"en": "Everything will be removed except the border walls."},
+	"editor_discard_title": {"zh": "放弃未保存的修改？", "en": "Discard unsaved changes?"},
+	"editor_discard_body": {"zh": "当前编辑的内容还没有保存。", "en": "The level you are editing has not been saved."},
+	"editor_saved": {"zh": "关卡已保存到工坊", "en": "Level saved to the workshop"},
+	"editor_need_name": {"zh": "请先填写关卡名称。", "en": "Please give the level a name first."},
+	"editor_invalid_title": {"zh": "还不能试玩", "en": "Not ready to play"},
+	"editor_invalid_body": {"zh": "请先修正以下问题：\n%s", "en": "Please fix these issues first:\n%s"},
+	"editor_test_hint": {"zh": "空格试玩 · Ctrl+S 保存 · Ctrl+Z 撤销", "en": "Space to test · Ctrl+S to save · Ctrl+Z to undo"},
+	"editor_custom_list": {"zh": "我的关卡", "en": "My levels"},
+	"editor_no_levels": {"zh": "还没有保存过关卡。", "en": "No saved levels yet."},
+	"editor_new_level_name": {"zh": "未命名关卡 %d", "en": "Untitled Level %d"},
+	"editor_delete_title": {"zh": "删除这个关卡？", "en": "Delete this level?"},
+	"editor_delete_body": {"zh": "“%s” 将从工坊中永久删除。", "en": "\"%s\" will be permanently deleted from the workshop."},
+	"editor_untitled": {"zh": "未命名关卡", "en": "Untitled Level"},
+	"editor_import": {"zh": "导入", "en": "Import"},
+	"editor_export": {"zh": "导出", "en": "Export"},
+	"editor_import_title": {"zh": "导入 XSB 关卡", "en": "Import XSB level"},
+	"editor_import_hint": {"zh": "粘贴文本格式的关卡（# 墙、. 目标、$ 木箱、@ 玩家、* 木箱在目标上、+ 玩家在目标上）：",
+			"en": "Paste a text level (# wall, . goal, $ crate, @ player, * crate on goal, + player on goal):"},
+	"editor_import_failed": {"zh": "没有识别到有效的关卡文本。", "en": "No valid level found in that text."},
+	"editor_imported": {"zh": "已导入 %d 个关卡", "en": "Imported %d levels"},
+	"editor_exported": {"zh": "已复制到剪贴板", "en": "Copied to clipboard"},
+	"editor_export_title": {"zh": "导出关卡", "en": "Export level"},
+	"editor_dead_box": {"zh": "有木箱停在无法到达目标点的位置。", "en": "A crate is in a spot from which no goal can be reached."},
+	"editor_unsaved_badge": {"zh": "有未保存的修改", "en": "Unsaved changes"},
+	"editor_saved_badge": {"zh": "已保存", "en": "Saved"},
+	"editor_zoom_hint": {"zh": "滚轮缩放 · 中键拖动", "en": "Wheel to zoom · middle-drag to pan"},
+	"editor_hover_hint": {"zh": "左键绘制 · 右键擦除", "en": "Left click to paint · right click to erase"},
+
+	# ---------------------------------------------------------------- errors
+	"err_no_player": {"zh": "关卡中需要一个工人（@）。", "en": "The level needs exactly one worker (@)."},
+	"err_no_box": {"zh": "至少需要一个木箱（$）。", "en": "Add at least one crate ($)."},
+	"err_no_goal": {"zh": "至少需要一个目标点（.）。", "en": "Add at least one goal (.)"},
+	"err_mismatch": {"zh": "木箱与目标点数量不一致（%d 箱 / %d 目标）。",
+			"en": "Crate and goal counts differ (%d crates / %d goals)."},
+	"err_too_small": {"zh": "关卡至少需要 4×4 的尺寸。", "en": "The level must be at least 4×4."},
+	"err_player_wall": {"zh": "工人不能站在墙里。", "en": "The worker cannot stand inside a wall."},
+	"err_box_wall": {"zh": "木箱不能放在墙里。", "en": "A crate cannot sit inside a wall."},
+	"err_dead_box": {"zh": "有木箱处于无法解开的死角。", "en": "A crate is trapped in a dead corner."},
+	"err_open_edge": {"zh": "地图边缘有通道，玩家可能走出地图。", "en": "The border is open; the worker could walk off the map."},
+	"err_hazard_cramped": {"zh": "开启暴徒/小偷时，空地过少可能导致它们生成在很近的位置。",
+			"en": "With the thug or thief on, very little open floor can spawn them close by."},
+	"err_hazard_last_box": {"zh": "只有 1 个木箱时小偷一次得手就必输，建议多加几个箱子。",
+			"en": "With a single crate, one theft is game over; consider adding more crates."},
+	"err_player_only": {"zh": "只有一个工人。", "en": "There is exactly one worker."},
+	"err_valid": {"zh": "关卡检查通过。", "en": "Level check passed."},
+
+	# ---------------------------------------------------------------- dialogs / toasts
+	"dialog_delete": {"zh": "永久删除", "en": "Delete permanently"},
+	"toast_locked": {"zh": "先完成前面的关卡", "en": "Finish the earlier levels first"},
+	"toast_chapter_locked": {"zh": "通关上一章才能解锁", "en": "Clear more of the previous chapter"},
+	"toast_copied": {"zh": "已复制", "en": "Copied"},
+	"toast_saved": {"zh": "已保存", "en": "Saved"},
+	"toast_hint_none": {"zh": "暂时没有提示", "en": "No hint available"},
+	"toast_undo_none": {"zh": "没有可撤销的步骤", "en": "Nothing to undo"},
+	"toast_redo_none": {"zh": "没有可重做的步骤", "en": "Nothing to redo"},
+	"toast_playtest_return": {"zh": "返回编辑器", "en": "Back to editor"},
+
+	# ---------------------------------------------------------------- coins / items / shop
+	"game_coins": {"zh": "金币", "en": "Coins"},
+	"menu_shop": {"zh": "商店", "en": "Shop"},
+	"gm_grant_tooltip": {"zh": "GM：获得 100 金币", "en": "GM: grant 100 coins"},
+	"gm_granted": {"zh": "GM 发放 %d 金币", "en": "GM granted %d coins"},
+	"starter_gift_toast": {"zh": "新手大礼包：机器人全部装甲 +1 级！",
+			"en": "Starter kit: every robot part upgraded to Lv1!"},
+	"shop_kicker": {"zh": "补给与外包", "en": "SUPPLIES & CONTRACTS"},
+	"shop_title": {"zh": "道具商店", "en": "Item Shop"},
+	"shop_wallet": {"zh": "我的金币", "en": "My coins"},
+	"shop_subtitle": {"zh": "每颗星 15 金币，每次通关都按星级发放。",
+			"en": "Every star is worth 15 coins, paid on every clear."},
+	"shop_buy": {"zh": "购买", "en": "Buy"},
+	"shop_owned": {"zh": "拥有 %d 个", "en": "Owned: %d"},
+	"shop_need_coins": {"zh": "金币不足，需要 %d 金币", "en": "Not enough coins (need %d)"},
+	"shop_ad_title": {"zh": "观看广告领取金币", "en": "Watch an ad for coins"},
+	"shop_ad_body": {"zh": "看 %d 秒广告，立刻获得 %d 金币。", "en": "Watch a %d second ad and get %d coins."},
+	"shop_ad_button": {"zh": "看广告 +%d", "en": "Watch ad +%d"},
+	"shop_ad_reward": {"zh": "获得 %d 金币", "en": "+%d coins"},
+	"ad_title": {"zh": "广告位招租", "en": "AD SPACE FOR RENT"},
+	"ad_subtitle": {"zh": "此处为占位广告，正式上线后替换为合作方素材。",
+			"en": "Placeholder creative. Real sponsor art goes here."},
+	"ad_countdown": {"zh": "%d 秒后可以领取奖励", "en": "Reward unlocks in %d s"},
+	"ad_wait": {"zh": "请稍候（%d）", "en": "Please wait (%d)"},
+	"ad_ready": {"zh": "广告播放完毕", "en": "Ad finished"},
+	"ad_claim": {"zh": "领取奖励", "en": "Claim reward"},
+	"ad_restart": {"zh": "重新开始需要观看一次广告", "en": "Restarting requires watching an ad"},
+	"item_price": {"zh": "%d 金币", "en": "%d coins"},
+	"item_bought": {"zh": "已购买 %s", "en": "Bought %s"},
+	"item_need_coins": {"zh": "金币不足，需要 %d 金币", "en": "Not enough coins (need %d)"},
+	"item_unavailable_here": {"zh": "道具仅能在正式关卡中使用", "en": "Items work in campaign levels only"},
+	"item_cancelled": {"zh": "已取消道具", "en": "Item cancelled"},
+	"item_c4": {"zh": "障碍消除（c4 炸药）", "en": "C4 Charge"},
+	"item_c4_desc": {"zh": "选中后朝墙壁推动一次，炸掉这一格墙体。",
+			"en": "Arm it, then push into a wall to blow that cell up."},
+	"item_c4_used": {"zh": "墙体已炸开", "en": "Wall destroyed"},
+	"item_hint_c4": {"zh": "朝想炸掉的墙壁移动一次。", "en": "Step into the wall you want to destroy."},
+	"item_rope": {"zh": "牵拉绳", "en": "Pull Rope"},
+	"item_rope_desc": {"zh": "选中后朝箱子反方向移动，可把身后的箱子拉动一次。",
+			"en": "Arm it and step away from a crate to drag it one cell."},
+	"item_hint_rope": {"zh": "背对木箱移动，可以把它拉过来。", "en": "Move away from a crate to pull it."},
+	"item_crane": {"zh": "起重机", "en": "Crane"},
+	"item_crane_desc": {"zh": "选中后先点木箱，再点落点，直接把木箱搬过去。",
+			"en": "Arm it, click a crate, then click the destination."},
+	"item_hint_crane": {"zh": "点击要搬动的木箱。", "en": "Click the crate to move."},
+	"item_crane_pick": {"zh": "请点击一个木箱", "en": "Click a crate first"},
+	"item_crane_place": {"zh": "再点击落点位置", "en": "Now click the destination"},
+	"item_crane_blocked": {"zh": "这里放不下木箱", "en": "The crate cannot go there"},
+	"item_crane_used": {"zh": "木箱已吊运", "en": "Crate relocated"},
+	"item_rewind": {"zh": "时间逆流器", "en": "Time Rewinder"},
+	"item_rewind_desc": {"zh": "撤销一步操作。游戏不再提供免费的撤销。",
+			"en": "Undo one step. Free undo is no longer available."},
+	"item_hint_rewind": {"zh": "撤销上一步。", "en": "Undo the last step."},
+	"item_guide": {"zh": "专家指导", "en": "Expert Guidance"},
+	"item_guide_desc": {"zh": "花 10 金币获得一次提示。免费提示已取消。",
+			"en": "Get one hint for 10 coins. Free hints are gone."},
+	"item_hint_guide": {"zh": "高亮下一步该推哪个箱子。", "en": "Highlights the next crate to push."},
+	"item_contract": {"zh": "外包合同", "en": "Outsource Contract"},
+	"item_contract_desc": {"zh": "直接以三星完成本关。",
+			"en": "Finish this level instantly with three stars."},
+	"item_hint_contract": {"zh": "立即以三星完成本关。", "en": "Complete the level with 3 stars."},
+	"item_contract_used": {"zh": "外包团队已接手，三星完成", "en": "Contractors finished it: 3 stars"},
+	"result_contract_badge": {"zh": "外包完成", "en": "Contract clear"},
+	"result_coins": {"zh": "+%d 金币", "en": "+%d coins"},
+
+	# ---------------------------------------------------------------- robot upgrades
+	"menu_robot": {"zh": "强化舱", "en": "Upgrade Bay"},
+	"robot_kicker": {"zh": "机体改造", "en": "CHASSIS MODS"},
+	"robot_title": {"zh": "强化舱", "en": "Upgrade Bay"},
+	"robot_level": {"zh": "等级 %d / %d", "en": "Level %d / %d"},
+	"robot_upgrade": {"zh": "强化", "en": "Upgrade"},
+	"robot_maxed": {"zh": "已满级", "en": "Maxed out"},
+	"robot_maxed_short": {"zh": "满级", "en": "MAX"},
+	"robot_locked_short": {"zh": "未装", "en": "—"},
+	"robot_locked_hint": {"zh": "这个部位还没有强化，先到强化舱升级。",
+			"en": "This part is not upgraded yet. Visit the upgrade bay."},
+	"robot_no_charges": {"zh": "本关的次数已用完", "en": "No charges left this level"},
+	"ability_charge_buy_tip": {"zh": "点一下花 %d 金币再买 1 次", "en": "Click to buy 1 more for %d coins"},
+	"ability_charge_bought": {"zh": "花 %d 金币，额外获得 1 次使用", "en": "Spent %d coins for one extra use"},
+	"ability_charge_need_coins": {"zh": "金币不足：额外 1 次需要 %d 金币，可先看广告或去商店",
+			"en": "Not enough coins: one extra use costs %d"},
+	"ability_charge_price_hint": {"zh": "本关次数用完后，可在关卡底栏花 %d 金币再买 1 次。",
+			"en": "Out of charges? Buy one more for %d coins in the level toolbar."},
+	"robot_upgraded": {"zh": "%s 强化到 Lv%d", "en": "%s upgraded to Lv%d"},
+	"robot_charge_infinite": {"zh": "每关不限次数", "en": "Unlimited each level"},
+	"robot_charge_count": {"zh": "每关 %d 次", "en": "%d per level"},
+	"robot_total": {"zh": "总强化 %d / %d 级", "en": "Total upgrades %d / %d"},
+	"robot_reset": {"zh": "重置强化", "en": "Reset mods"},
+	"robot_reset_title": {"zh": "重置所有强化？", "en": "Reset every upgrade?"},
+	"robot_reset_body": {"zh": "所有部位回到未强化状态，返还 %d 金币。",
+			"en": "Every part returns to level 0 and you get %d coins back."},
+	"robot_reset_done": {"zh": "已返还 %d 金币", "en": "Refunded %d coins"},
+	"robot_nothing_to_reset": {"zh": "还没有任何强化", "en": "Nothing to reset yet"},
+	"robot_arm": {"zh": "右臂 · 液压推杆", "en": "Right Arm · Hydraulic Ram"},
+	"robot_arm_desc": {"zh": "把整排连在一起的木箱一起推走，一次动作推动多个箱子。",
+			"en": "Shove a whole line of touching crates with a single push."},
+	"robot_arm_lv1": {"zh": "一次可连推 2 个木箱", "en": "Push up to 2 crates at once"},
+	"robot_arm_lv2": {"zh": "一次可连推 3 个木箱", "en": "Push up to 3 crates at once"},
+	"robot_arm_lv3": {"zh": "一次可连推 4 个木箱", "en": "Push up to 4 crates at once"},
+	"robot_hook": {"zh": "左臂 · 穿箱爪", "en": "Left Arm · Phase Claw"},
+	"robot_hook_desc": {"zh": "机械爪抓住箱体借力，直接穿过一整排木箱落到另一侧。",
+			"en": "Dig the claw into a crate and pass clean through a whole row of them."},
+	"robot_hook_lv1": {"zh": "每关 3 次穿箱", "en": "3 crate passes per level"},
+	"robot_hook_lv2": {"zh": "每关 5 次穿箱", "en": "5 crate passes per level"},
+	"robot_hook_lv3": {"zh": "穿箱次数不限", "en": "Unlimited crate passes"},
+	"robot_legs": {"zh": "腿部 · 弹跳器", "en": "Legs · Jump Actuator"},
+	"robot_legs_desc": {"zh": "借机械腿的力气越过一个木箱，落到它后面的空格。",
+			"en": "Leap over one crate and land on the free cell behind it."},
+	"robot_legs_lv1": {"zh": "每关 3 次跨越", "en": "3 jumps per level"},
+	"robot_legs_lv2": {"zh": "每关 6 次跨越", "en": "6 jumps per level"},
+	"robot_legs_lv3": {"zh": "跨越次数不限", "en": "Unlimited jumps"},
+	"robot_head": {"zh": "头部 · 相位目镜", "en": "Head · Phase Visor"},
+	"robot_head_desc": {"zh": "短暂虚化机体，直接穿过一格墙体。",
+			"en": "Phase the chassis through a single wall cell."},
+	"robot_head_lv1": {"zh": "每关 1 次穿墙", "en": "1 phase per level"},
+	"robot_head_lv2": {"zh": "每关 2 次穿墙", "en": "2 phases per level"},
+	"robot_head_lv3": {"zh": "每关 3 次穿墙", "en": "3 phases per level"},
+	"robot_back": {"zh": "背部 · 跃迁背包", "en": "Back · Warp Pack"},
+	"robot_back_desc": {"zh": "把工人瞬间传送到场上任意空地。",
+			"en": "Teleport the worker to any open cell on the board."},
+	"robot_back_lv1": {"zh": "每关 1 次跃迁", "en": "1 warp per level"},
+	"robot_back_lv2": {"zh": "每关 2 次跃迁", "en": "2 warps per level"},
+	"robot_back_lv3": {"zh": "每关 3 次跃迁", "en": "3 warps per level"},
+	"robot_core": {"zh": "胸口 · 过载核心", "en": "Chest · Overload Core"},
+	"robot_core_desc": {"zh": "通关结算时额外提升金币收益。",
+			"en": "Boosts the coins you earn for every clear."},
+	"robot_core_lv1": {"zh": "通关金币 +25%", "en": "+25% clear coins"},
+	"robot_core_lv2": {"zh": "通关金币 +50%", "en": "+50% clear coins"},
+	"robot_core_lv3": {"zh": "通关金币 +100%", "en": "+100% clear coins"},
+	"ability_hint_hook": {"zh": "朝木箱方向移动，直接穿过整排箱子。",
+			"en": "Move into a crate to pass through the whole row."},
+	"ability_hint_legs": {"zh": "朝木箱方向移动，跳过它。", "en": "Move into a crate to leap over it."},
+	"ability_hint_head": {"zh": "朝墙壁移动，直接穿过去。", "en": "Move into a wall to phase through."},
+	"ability_hint_back": {"zh": "点击场上任意空地瞬移过去。", "en": "Click any open cell to warp there."},
+	"ability_used_hook": {"zh": "穿箱完成", "en": "Passed through the crates"},
+	"ability_used_jump": {"zh": "弹跳完成", "en": "Jumped over"},
+	"ability_used_phase": {"zh": "相位穿透完成", "en": "Phased through"},
+	"ability_used_warp": {"zh": "跃迁完成", "en": "Warped"},
+	"game_chain": {"zh": "连推 ×%d", "en": "Chain x%d"},
+
+	# ---------------------------------------------------------------- hazards
+	"hazard_collapse_in": {"zh": "塌陷 %ds", "en": "Rubble in %ds"},
+	"hazard_thug": {"zh": "暴徒追击", "en": "Thug hunting"},
+	"hazard_thug_gone": {"zh": "暴徒已被压碎", "en": "Thug flattened"},
+	"hazard_thug_crushed": {"zh": "木箱压碎了暴徒！", "en": "A crate flattened the thug!"},
+	"hazard_thief": {"zh": "小偷出没", "en": "Thief lurking"},
+	"hazard_thief_respawn_in": {"zh": "小偷 %ds 后重生", "en": "Thief in %ds"},
+	"hazard_thief_respawned": {"zh": "新的小偷出现了！", "en": "A new thief appeared!"},
+	"hazard_thief_killed": {"zh": "机器人消灭了小偷！20 秒后会再来一个",
+			"en": "The worker took out the thief! Another one in 20 s"},
+	"hazard_crate_stolen": {"zh": "小偷抢走了木箱！", "en": "The thief made off with a crate!"},
+	"hazard_pry_interrupted": {"zh": "木箱被挪走，小偷撬箱中断！",
+			"en": "The crate moved away: the thief lost its grip!"},	"hazard_thief_grab": {"zh": "小偷正在撬箱", "en": "Thief prying a crate"},
+	"hazard_rubble_spawned": {"zh": "%d 格碎石落下，10 秒后消失", "en": "%d cells of rubble fell (10 s)"},
+	"defeat_title": {"zh": "任务失败", "en": "Mission Failed"},
+	"defeat_thug": {"zh": "你被暴徒抓住了。", "en": "The thug caught you."},
+	"defeat_thief": {"zh": "木箱被小偷撬走了。", "en": "The thief made off with a crate."},
+	"defeat_hint": {"zh": "重新开始不消耗广告，本关进度会清空。",
+			"en": "Retrying is free this time; the level restarts from the beginning."},
+	"defeat_retry": {"zh": "重新开始", "en": "Try again"},
+}
+
+var language: String = "zh"
+
+
+func _ready() -> void:
+	var saved := str(SaveManager.get_setting("language", ""))
+	set_language(saved, true)
+
+
+func detect_language() -> String:
+	var code := OS.get_locale_language().to_lower()
+	if code.begins_with("zh"):
+		return "zh"
+	return "en"
+
+
+func set_language(code: String, silent := false) -> void:
+	if code.is_empty():
+		code = detect_language()
+	if not LANGS.has(code):
+		code = "zh"
+	if code == language and not silent:
+		return
+	language = code
+	if not silent:
+		SaveManager.set_setting("language", code)
+		language_changed.emit()
+
+
+func t(key: String, args: Array = []) -> String:
+	var entry: Variant = STRINGS.get(key)
+	if entry == null:
+		return key
+	var text := str((entry as Dictionary).get(language, (entry as Dictionary).get("en", key)))
+	if not args.is_empty():
+		text = text % args
+	return text
+
+
+func level_name(level: Variant) -> String:
+	if level == null:
+		return ""
+	var zh := str(level.get("name_zh"))
+	var en := str(level.get("name_en"))
+	if language == "zh":
+		return zh if not zh.is_empty() else (en if not en.is_empty() else str(level.get("name")))
+	return en if not en.is_empty() else (zh if not zh.is_empty() else str(level.get("name")))
+
+
+func level_tip(level: Variant) -> String:
+	if level == null:
+		return ""
+	if language == "zh":
+		var zh := str(level.get("tip_zh"))
+		return zh if not zh.is_empty() else str(level.get("tip_en"))
+	var en := str(level.get("tip_en"))
+	return en if not en.is_empty() else str(level.get("tip_zh"))
+
+
+func chapter_name(chapter: Dictionary) -> String:
+	if language == "zh":
+		return str(chapter.get("name_zh", chapter.get("name_en", "")))
+	return str(chapter.get("name_en", chapter.get("name_zh", "")))
+
+
+func chapter_desc(chapter: Dictionary) -> String:
+	if language == "zh":
+		return str(chapter.get("desc_zh", chapter.get("desc_en", "")))
+	return str(chapter.get("desc_en", chapter.get("desc_zh", "")))

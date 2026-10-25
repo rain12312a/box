@@ -1,0 +1,21 @@
+# Godot 4 editor cache / imported resources
+.godot/
+
+# Exported builds
+build/
+*.exe
+*.pck
+*.zip
+
+# Python tooling
+__pycache__/
+*.py[cod]
+
+# Scratch art / previews produced by the tools scripts
+tools/_*.png
+tools/_*.png.import
+
+# OS / editor noise
+Thumbs.db
+.DS_Store
+*.tmp

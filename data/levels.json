@@ -1,0 +1,858 @@
+{
+  "version": 1,
+  "generated_by": "tools/sokoban_gen.py",
+  "chapters": [
+    {
+      "id": "chapter_1",
+      "name_zh": "初入仓库",
+      "name_en": "Into the Warehouse",
+      "desc_zh": "熟悉推箱子的基本规则，学会绕路和规划顺序。",
+      "desc_en": "Learn the ropes: pushing, walking around, and planning ahead.",
+      "levels": [
+        {
+          "id": "c1_01",
+          "name_zh": "第一步",
+          "name_en": "First Push",
+          "tip_zh": "用方向键把木箱推到目标点上。",
+          "tip_en": "Push the crate onto the goal.",
+          "par_moves": 1,
+          "par_pushes": 1,
+          "rows": [
+            "#######",
+            "#     #",
+            "# @$. #",
+            "#     #",
+            "#######"
+          ]
+        },
+        {
+          "id": "c1_02",
+          "name_zh": "向上推",
+          "name_en": "Push Up",
+          "tip_zh": "站在木箱下方，向上推。",
+          "tip_en": "Stand below the crate and push up.",
+          "par_moves": 1,
+          "par_pushes": 1,
+          "rows": [
+            "#######",
+            "#  .  #",
+            "#  $  #",
+            "#  @  #",
+            "#######"
+          ]
+        },
+        {
+          "id": "c1_03",
+          "name_zh": "转角",
+          "name_en": "Corner Turn",
+          "tip_zh": "木箱只能推，不能被拉。",
+          "tip_en": "Crates can be pushed, never pulled.",
+          "par_moves": 3,
+          "par_pushes": 2,
+          "rows": [
+            "#########",
+            "#   .   #",
+            "#       #",
+            "#   $   #",
+            "#   @   #",
+            "#       #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c1_04",
+          "name_zh": "绕到另一侧",
+          "name_en": "Walk Around",
+          "tip_zh": "绕到木箱右侧，才能把它推向左边。",
+          "tip_en": "Circle to the right side to push the crate left.",
+          "par_moves": 6,
+          "par_pushes": 3,
+          "rows": [
+            "#########",
+            "#.      #",
+            "#  $    #",
+            "#   @   #",
+            "#       #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c1_05",
+          "name_zh": "两个木箱",
+          "name_en": "Two Crates",
+          "tip_zh": "先想清楚顺序，再动手。",
+          "tip_en": "Plan the order before you move.",
+          "par_moves": 15,
+          "par_pushes": 6,
+          "rows": [
+            "########",
+            "#.    .#",
+            "#  $$  #",
+            "#   @  #",
+            "#      #",
+            "########"
+          ]
+        },
+        {
+          "id": "c1_06",
+          "name_zh": "别进死角",
+          "name_en": "Avoid Dead Ends",
+          "tip_zh": "推进墙角会让木箱永远无法脱身。",
+          "tip_en": "A crate pushed into a corner is stuck forever.",
+          "par_moves": 46,
+          "par_pushes": 11,
+          "rows": [
+            "#########",
+            "#.     .#",
+            "#  ##   #",
+            "#  $    #",
+            "#  $ @  #",
+            "#       #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c1_07",
+          "name_zh": "窄通道",
+          "name_en": "Corridor",
+          "tip_zh": "在窄通道里，先推远处的箱子。",
+          "tip_en": "In narrow halls, push the far crate first.",
+          "par_moves": 46,
+          "par_pushes": 10,
+          "rows": [
+            "#########",
+            "#   . . #",
+            "#  ###  #",
+            "#   $   #",
+            "#  $    #",
+            "#   @   #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c1_08",
+          "name_zh": "四方",
+          "name_en": "Four Ways",
+          "tip_zh": "观察目标点的位置，规划路线。",
+          "tip_en": "Study the goals and plan your route.",
+          "par_moves": 40,
+          "par_pushes": 12,
+          "rows": [
+            "##########",
+            "#.      .#",
+            "#  $  $  #",
+            "#    @   #",
+            "#  $  $  #",
+            "#.      .#",
+            "##########"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter_2",
+      "name_zh": "木箱回廊",
+      "name_en": "Crate Corridors",
+      "desc_zh": "狭窄通道与多个木箱，谨慎安排每一步。",
+      "desc_en": "Narrow passages and multiple crates demand careful ordering.",
+      "levels": [
+        {
+          "id": "c2_01",
+          "name_zh": "窄门",
+          "name_en": "Narrow Door",
+          "tip_zh": "本关最优：15 步。试着少走几步。",
+          "tip_en": "Optimal route: 15 moves. Try to beat it.",
+          "par_moves": 15,
+          "par_pushes": 6,
+          "rows": [
+            "#######",
+            "#     #",
+            "# $  .#",
+            "# # # #",
+            "#  $  #",
+            "#. @  #",
+            "#######"
+          ]
+        },
+        {
+          "id": "c2_02",
+          "name_zh": "回声长廊",
+          "name_en": "Echo Hall",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 25,
+          "par_pushes": 7,
+          "rows": [
+            "########",
+            "#      #",
+            "#@*  $ #",
+            "# # ####",
+            "# #.   #",
+            "# $  . #",
+            "########"
+          ]
+        },
+        {
+          "id": "c2_03",
+          "name_zh": "侧门",
+          "name_en": "Side Entrance",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 15,
+          "par_pushes": 6,
+          "rows": [
+            "######",
+            "#  @.#",
+            "# $$ #",
+            "# #  #",
+            "#   .#",
+            "######"
+          ]
+        },
+        {
+          "id": "c2_04",
+          "name_zh": "木料间",
+          "name_en": "Timber Room",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 29,
+          "par_pushes": 10,
+          "rows": [
+            "#######",
+            "#  @  #",
+            "#$ $$ #",
+            "#   ###",
+            "#..  .#",
+            "#######"
+          ]
+        },
+        {
+          "id": "c2_05",
+          "name_zh": "夜班",
+          "name_en": "Night Shift",
+          "tip_zh": "本关最优：41 步。试着少走几步。",
+          "tip_en": "Optimal route: 41 moves. Try to beat it.",
+          "par_moves": 41,
+          "par_pushes": 6,
+          "rows": [
+            "########",
+            "#      #",
+            "#  #.$ #",
+            "#$ #   #",
+            "#+ ##$ #",
+            "#   # .#",
+            "########"
+          ]
+        },
+        {
+          "id": "c2_06",
+          "name_zh": "双排货架",
+          "name_en": "Twin Racks",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 27,
+          "par_pushes": 7,
+          "rows": [
+            "#######",
+            "#     #",
+            "#$ ## #",
+            "# ##  #",
+            "# ##$ #",
+            "#...$@#",
+            "#######"
+          ]
+        },
+        {
+          "id": "c2_07",
+          "name_zh": "转弯处",
+          "name_en": "The Turn",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 25,
+          "par_pushes": 6,
+          "rows": [
+            "#######",
+            "#    .#",
+            "#  ## #",
+            "# $ #$#",
+            "#    +#",
+            "#######"
+          ]
+        },
+        {
+          "id": "c2_08",
+          "name_zh": "装卸口",
+          "name_en": "Loading Bay",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 31,
+          "par_pushes": 7,
+          "rows": [
+            "########",
+            "# @   .#",
+            "# $ #$ #",
+            "#  #   #",
+            "#  # $ #",
+            "#  . . #",
+            "########"
+          ]
+        },
+        {
+          "id": "c2_09",
+          "name_zh": "旧楼梯",
+          "name_en": "Old Stairs",
+          "tip_zh": "本关最优：21 步。试着少走几步。",
+          "tip_en": "Optimal route: 21 moves. Try to beat it.",
+          "par_moves": 21,
+          "par_pushes": 9,
+          "rows": [
+            "#######",
+            "#.    #",
+            "#   $ #",
+            "# . # #",
+            "#$  # #",
+            "#@$  .#",
+            "#######"
+          ]
+        },
+        {
+          "id": "c2_10",
+          "name_zh": "中转区",
+          "name_en": "Transit Zone",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 16,
+          "par_pushes": 6,
+          "rows": [
+            "########",
+            "#.     #",
+            "# @$   #",
+            "#   ## #",
+            "# $ #  #",
+            "#   .  #",
+            "########"
+          ]
+        },
+        {
+          "id": "c2_11",
+          "name_zh": "背靠背",
+          "name_en": "Back to Back",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 26,
+          "par_pushes": 8,
+          "rows": [
+            "#######",
+            "#    .#",
+            "# . @ #",
+            "#   $ #",
+            "# $$  #",
+            "#    .#",
+            "#######"
+          ]
+        },
+        {
+          "id": "c2_12",
+          "name_zh": "第七号线",
+          "name_en": "Line Seven",
+          "tip_zh": "别把木箱推到墙角。",
+          "tip_en": "Keep crates out of corners.",
+          "par_moves": 16,
+          "par_pushes": 6,
+          "rows": [
+            "########",
+            "#      #",
+            "#  ### #",
+            "#.#+$  #",
+            "# $$ #.#",
+            "#    # #",
+            "########"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter_3",
+      "name_zh": "积木工坊",
+      "name_en": "The Workshop",
+      "desc_zh": "复杂房间与死角陷阱，试着寻找最优解。",
+      "desc_en": "Dense rooms and corner traps. Can you find the optimal route?",
+      "levels": [
+        {
+          "id": "c3_01",
+          "name_zh": "齿轮间",
+          "name_en": "Gears",
+          "tip_zh": "本关最优：41 步。试着少走几步。",
+          "tip_en": "Optimal route: 41 moves. Try to beat it.",
+          "par_moves": 41,
+          "par_pushes": 11,
+          "rows": [
+            "########",
+            "#    $+#",
+            "# ## ###",
+            "#      #",
+            "# $ ##*#",
+            "# $  ..#",
+            "########"
+          ]
+        },
+        {
+          "id": "c3_02",
+          "name_zh": "堆叠术",
+          "name_en": "Stacking",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 39,
+          "par_pushes": 11,
+          "rows": [
+            "#########",
+            "#     . #",
+            "#@$   # #",
+            "#  ##   #",
+            "# ##    #",
+            "# $ $.# #",
+            "#     . #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c3_03",
+          "name_zh": "工坊一角",
+          "name_en": "Workshop Corner",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 27,
+          "par_pushes": 11,
+          "rows": [
+            "#########",
+            "#       #",
+            "# $@ .# #",
+            "# $$# ###",
+            "#   #   #",
+            "#.      #",
+            "#    .  #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c3_04",
+          "name_zh": "吊车轨道",
+          "name_en": "Crane Rail",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 48,
+          "par_pushes": 12,
+          "rows": [
+            "#########",
+            "#.    . #",
+            "#  $  @ #",
+            "# # ##$ #",
+            "# # .   #",
+            "#$# #$. #",
+            "#       #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c3_05",
+          "name_zh": "四个角落",
+          "name_en": "Four Corners",
+          "tip_zh": "本关最优：61 步。试着少走几步。",
+          "tip_en": "Optimal route: 61 moves. Try to beat it.",
+          "par_moves": 61,
+          "par_pushes": 16,
+          "rows": [
+            "#########",
+            "#     . #",
+            "# $  #$ #",
+            "#  #$#  #",
+            "#  #  # #",
+            "# $# #  #",
+            "#.@  . .#",
+            "#########"
+          ]
+        },
+        {
+          "id": "c3_06",
+          "name_zh": "午休",
+          "name_en": "Lunch Break",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 56,
+          "par_pushes": 14,
+          "rows": [
+            "########",
+            "#   .  #",
+            "#.## # #",
+            "#.##   #",
+            "# # $###",
+            "#  $@$ #",
+            "#      #",
+            "########"
+          ]
+        },
+        {
+          "id": "c3_07",
+          "name_zh": "黄铜钥匙",
+          "name_en": "Brass Key",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 38,
+          "par_pushes": 11,
+          "rows": [
+            "########",
+            "#      #",
+            "# #$ $ #",
+            "#.  #  #",
+            "#+$..$ #",
+            "#      #",
+            "########"
+          ]
+        },
+        {
+          "id": "c3_08",
+          "name_zh": "零件柜",
+          "name_en": "Parts Locker",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 61,
+          "par_pushes": 13,
+          "rows": [
+            "#########",
+            "#    . .#",
+            "#  $#   #",
+            "# . ### #",
+            "# .  ## #",
+            "#@$  $ $#",
+            "#       #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c3_09",
+          "name_zh": "狭缝",
+          "name_en": "The Slit",
+          "tip_zh": "本关最优：45 步。试着少走几步。",
+          "tip_en": "Optimal route: 45 moves. Try to beat it.",
+          "par_moves": 45,
+          "par_pushes": 12,
+          "rows": [
+            "########",
+            "# .    #",
+            "# ##  .#",
+            "# #  # #",
+            "# ## #$#",
+            "#   $@ #",
+            "# $   .#",
+            "########"
+          ]
+        },
+        {
+          "id": "c3_10",
+          "name_zh": "手推车",
+          "name_en": "Handcart",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 63,
+          "par_pushes": 11,
+          "rows": [
+            "########",
+            "#    $+#",
+            "# .  ###",
+            "# .##. #",
+            "#  ##  #",
+            "# $$ $ #",
+            "#      #",
+            "########"
+          ]
+        },
+        {
+          "id": "c3_11",
+          "name_zh": "密封仓",
+          "name_en": "Sealed Hold",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 71,
+          "par_pushes": 15,
+          "rows": [
+            "#########",
+            "# .  .  #",
+            "# ##  $@#",
+            "#   .## #",
+            "#  #    #",
+            "#  # $$ #",
+            "#       #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c3_12",
+          "name_zh": "夜灯",
+          "name_en": "Night Lamp",
+          "tip_zh": "先处理最难的那个木箱。",
+          "tip_en": "Deal with the hardest crate first.",
+          "par_moves": 34,
+          "par_pushes": 12,
+          "rows": [
+            "#########",
+            "#  .    #",
+            "#   ###.#",
+            "# $## $.#",
+            "#  #    #",
+            "#@$   # #",
+            "#       #",
+            "#########"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter_4",
+      "name_zh": "货运中枢",
+      "name_en": "Freight Hub",
+      "desc_zh": "大师级难题，用最少的步数完成搬运。",
+      "desc_en": "Expert challenges. Finish every haul with minimal moves.",
+      "levels": [
+        {
+          "id": "c4_01",
+          "name_zh": "总调度",
+          "name_en": "Dispatcher",
+          "tip_zh": "本关最优：83 步。试着少走几步。",
+          "tip_en": "Optimal route: 83 moves. Try to beat it.",
+          "par_moves": 83,
+          "par_pushes": 15,
+          "rows": [
+            "#########",
+            "# .    .#",
+            "#  $  ..#",
+            "#  $ # $#",
+            "# # .#$.#",
+            "# ##  @ #",
+            "# ##$ #$#",
+            "#       #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c4_02",
+          "name_zh": "重载",
+          "name_en": "Heavy Load",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 67,
+          "par_pushes": 17,
+          "rows": [
+            "##########",
+            "#        #",
+            "# $####. #",
+            "# @     .#",
+            "# $  ##$ #",
+            "#    # $ #",
+            "#   .# $.#",
+            "#       .#",
+            "##########"
+          ]
+        },
+        {
+          "id": "c4_03",
+          "name_zh": "最后一班",
+          "name_en": "Last Train",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 67,
+          "par_pushes": 15,
+          "rows": [
+            "##########",
+            "# .      #",
+            "#    .   #",
+            "#$#$$  # #",
+            "# #@  .  #",
+            "#  #### .#",
+            "#. # $ $ #",
+            "#        #",
+            "##########"
+          ]
+        },
+        {
+          "id": "c4_04",
+          "name_zh": "货运中枢",
+          "name_en": "Freight Hub",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 50,
+          "par_pushes": 16,
+          "rows": [
+            "#########",
+            "#       #",
+            "# $   ..#",
+            "#  $$ # #",
+            "#.@$  ###",
+            "# ##    #",
+            "# # #   #",
+            "# #  .  #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c4_05",
+          "name_zh": "集装箱",
+          "name_en": "Containers",
+          "tip_zh": "本关最优：64 步。试着少走几步。",
+          "tip_en": "Optimal route: 64 moves. Try to beat it.",
+          "par_moves": 64,
+          "par_pushes": 20,
+          "rows": [
+            "##########",
+            "#      . #",
+            "# #$$ #  #",
+            "# #@#  . #",
+            "#  $   . #",
+            "# $    # #",
+            "#    #.# #",
+            "#        #",
+            "##########"
+          ]
+        },
+        {
+          "id": "c4_06",
+          "name_zh": "交叉线",
+          "name_en": "Crossed Lines",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 37,
+          "par_pushes": 15,
+          "rows": [
+            "#########",
+            "#.   $  #",
+            "#   #   #",
+            "# . $  .#",
+            "#   # # #",
+            "# #   # #",
+            "# # $$###",
+            "#  .. $@#",
+            "#########"
+          ]
+        },
+        {
+          "id": "c4_07",
+          "name_zh": "迷宫",
+          "name_en": "Labyrinth",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 75,
+          "par_pushes": 21,
+          "rows": [
+            "#########",
+            "#     ..#",
+            "# $ #@# #",
+            "# $ #$$ #",
+            "#  ##  $#",
+            "# .   # #",
+            "# ##  . #",
+            "#  .    #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c4_08",
+          "name_zh": "零点",
+          "name_en": "Zero Hour",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 86,
+          "par_pushes": 17,
+          "rows": [
+            "##########",
+            "#   .  $ #",
+            "#.*$ # $ #",
+            "#  . ##  #",
+            "# ##   #.#",
+            "#   ##   #",
+            "#$  ###  #",
+            "#@$     .#",
+            "##########"
+          ]
+        },
+        {
+          "id": "c4_09",
+          "name_zh": "压力测试",
+          "name_en": "Stress Test",
+          "tip_zh": "本关最优：61 步。试着少走几步。",
+          "tip_en": "Optimal route: 61 moves. Try to beat it.",
+          "par_moves": 61,
+          "par_pushes": 19,
+          "rows": [
+            "##########",
+            "# .      #",
+            "# ## .$# #",
+            "#  #    .#",
+            "#   $ $  #",
+            "# ###    #",
+            "# .. $$###",
+            "#     @  #",
+            "##########"
+          ]
+        },
+        {
+          "id": "c4_10",
+          "name_zh": "钢铁森林",
+          "name_en": "Steel Forest",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 42,
+          "par_pushes": 15,
+          "rows": [
+            "##########",
+            "#     .. #",
+            "#  $$  $ #",
+            "#.   #.  #",
+            "#    #   #",
+            "# # ## ###",
+            "#$#  $   #",
+            "#@.      #",
+            "##########"
+          ]
+        },
+        {
+          "id": "c4_11",
+          "name_zh": "仓库深处",
+          "name_en": "Deep Storage",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 99,
+          "par_pushes": 20,
+          "rows": [
+            "#########",
+            "#      .#",
+            "#$$#..$@#",
+            "#  #.#$ #",
+            "#..#    #",
+            "#  ##$$ #",
+            "#   #   #",
+            "#########"
+          ]
+        },
+        {
+          "id": "c4_12",
+          "name_zh": "完工",
+          "name_en": "Clock Out",
+          "tip_zh": "有时候，后退一步才能前进。",
+          "tip_en": "Sometimes you must step back to move forward.",
+          "par_moves": 69,
+          "par_pushes": 18,
+          "rows": [
+            "##########",
+            "#@$ .    #",
+            "#$ #* ## #",
+            "# ##.  # #",
+            "#    #   #",
+            "# #      #",
+            "#.##   $ #",
+            "#.     $ #",
+            "##########"
+          ]
+        }
+      ]
+    }
+  ]
+}

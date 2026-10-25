@@ -1,0 +1,59 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="推箱子：货运仓库"
+config/description="A complete Sokoban game with a 44 level campaign, level editor and workshop."
+config/version="1.0.0"
+run/main_scene="res://scenes/app.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="SokobanFreightDepot"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+boot_splash/bg_color=Color(0.05, 0.0745, 0.1176, 1)
+boot_splash/show_image=false
+config/icon="res://icon.svg"
+
+[autoload]
+
+SaveManager="*res://autoload/save_manager.gd"
+Loc="*res://autoload/loc.gd"
+Audio="*res://autoload/audio.gd"
+Game="*res://autoload/game_manager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[file_customization]
+
+folder_colors={
+"res://assets/": "yellow",
+"res://autoload/": "blue",
+"res://core/": "purple",
+"res://data/": "green",
+"res://scripts/": "blue",
+"res://tests/": "gray",
+"res://tools/": "gray",
+"res://ui/": "teal"
+}
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.05, 0.0745, 0.1176, 1)
