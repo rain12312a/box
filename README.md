@@ -6,27 +6,23 @@
 
 ![菜单](docs/screenshots/menu.png)
 
-| 关卡选择（全部解锁） | 关卡（底部为道具栏） |
+| 关卡选择（全部解锁） | 通关结算 |
 | --- | --- |
-| ![关卡选择](docs/screenshots/level_select.png) | ![游戏](docs/screenshots/game.png) |
+| ![关卡选择](docs/screenshots/level_select.png) | ![结算](docs/screenshots/win.png) |
 
-| 通关结算 | 道具商店 |
+| 道具商店 | 广告占位弹窗 |
 | --- | --- |
-| ![结算](docs/screenshots/win.png) | ![商店](docs/screenshots/shop.png) |
+| ![商店](docs/screenshots/shop.png) | ![广告](docs/screenshots/ad.png) |
 
-| 广告占位弹窗 | 强化舱 |
+| 强化舱 | 第四章危险机制 |
 | --- | --- |
-| ![广告](docs/screenshots/ad.png) | ![强化舱](docs/screenshots/robot.png) |
+| ![强化舱](docs/screenshots/robot.png) | ![危险](docs/screenshots/hazards.png) |
 
-| 第四章危险机制 | 任务失败 |
+| 任务失败 | 工坊关卡（卡片带危险机制标签） |
 | --- | --- |
-| ![危险](docs/screenshots/hazards.png) | ![失败](docs/screenshots/defeat.png) |
+| ![失败](docs/screenshots/defeat.png) | ![工坊](docs/screenshots/custom_levels.png) |
 
-![编辑器（侧栏可开关塌陷 / 暴徒 / 小偷）](docs/screenshots/editor.png)
-
-| 工坊关卡（卡片带危险机制标签） |
-| --- |
-| ![工坊](docs/screenshots/custom_levels.png) |
+![关卡编辑器（侧栏可开关塌陷 / 暴徒 / 小偷）](docs/screenshots/editor.png)
 
 ---
 
